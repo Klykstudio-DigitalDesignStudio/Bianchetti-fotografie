@@ -1,0 +1,85 @@
+
+@import url('https://api.fontshare.com/v2/css?f[]=melodrama@300,400,500,600,700&display=swap');
+@import 'tailwindcss';
+
+html {
+	scroll-behavior: smooth;
+}
+
+body {
+	-webkit-font-smoothing: antialiased;
+	text-rendering: optimizeLegibility;
+}
+
+a,
+button,
+[role='button'],
+summary {
+	cursor: pointer;
+}
+
+button,
+a {
+	transition:
+		color 180ms ease,
+		background-color 180ms ease,
+		border-color 180ms ease,
+		opacity 180ms ease,
+		transform 180ms ease,
+		box-shadow 180ms ease;
+}
+
+@layer utilities {
+	.font-display {
+		font-family: 'Melodrama', serif;
+		letter-spacing: 0.01em;
+	}
+}
+
+/* Marquee scrolling animations */
+@keyframes scroll-left-a {
+	0% { transform: translateX(0); }
+	100% { transform: translateX(-50%); }
+}
+
+@keyframes scroll-left-b {
+	0% { transform: translateX(0); }
+	100% { transform: translateX(-50%); }
+}
+
+@keyframes scroll-left-c {
+	0% { transform: translateX(0); }
+	100% { transform: translateX(-50%); }
+}
+
+@keyframes scroll-left-d {
+	0% { transform: translateX(0); }
+	100% { transform: translateX(-50%); }
+}
+
+.lineerotanti-row {
+	overflow: hidden;
+	width: 100%;
+}
+
+.lineerotanti-track {
+	display: inline-flex;
+	white-space: nowrap;
+	width: fit-content;
+}
+
+.lineerotanti-speed-a .lineerotanti-track {
+	animation: scroll-left-a 30s linear infinite;
+}
+
+.lineerotanti-speed-b .lineerotanti-track {
+	animation: scroll-left-b 40s linear infinite;
+}
+
+.lineerotanti-speed-c .lineerotanti-track {
+	animation: scroll-left-c 50s linear infinite;
+}
+
+.lineerotanti-speed-d .lineerotanti-track {
+	animation: scroll-left-d 60s linear infinite;
+}
