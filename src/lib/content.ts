@@ -1,6 +1,24 @@
 import aboutHomepageImage from '../assets/aboutHomepage.webp'
 import { fetchSanityData, isSanityConfigured } from './sanity'
 
+function optimizeImageUrl(url: string, width = 1800) {
+    if (!url) {
+        return url
+    }
+
+    if (url.includes('cdn.sanity.io/images/')) {
+        const separator = url.includes('?') ? '&' : '?'
+        return `${url}${separator}auto=format&fit=max&w=${width}`
+    }
+
+    if (url.includes('images.unsplash.com/')) {
+        const separator = url.includes('?') ? '&' : '?'
+        return `${url}${separator}auto=format&fit=crop&w=${width}&q=80`
+    }
+
+    return url
+}
+
 export type HeroCta = {
     label: string
     href: string
@@ -594,7 +612,7 @@ function normalizeGallery(value: Partial<GallerySettings> | undefined): GalleryS
 
 function normalizeAbout(value: Partial<AboutSettings> | undefined): AboutSettings {
     return {
-        imageUrl: value?.imageUrl?.trim() || seedAboutSettings.imageUrl,
+        imageUrl: optimizeImageUrl(value?.imageUrl?.trim() || seedAboutSettings.imageUrl, 1400),
         imageAlt: value?.imageAlt?.trim() || seedAboutSettings.imageAlt,
         title: value?.title?.trim() || seedAboutSettings.title,
         role: value?.role?.trim() || seedAboutSettings.role,
@@ -699,7 +717,7 @@ function normalizePhotos(
             _key: photo._key || `photo-${index + 1}`,
             title: photo.title?.trim() || `Foto ${index + 1}`,
             alt: photo.alt?.trim() || photo.title?.trim() || `Foto ${index + 1}`,
-            imageUrl: photo.imageUrl,
+            imageUrl: optimizeImageUrl(photo.imageUrl, 1800),
             featuredInHomepage: Boolean(photo.featuredInHomepage),
             heroOrder: typeof photo.heroOrder === 'number' ? photo.heroOrder : undefined,
         }))
@@ -721,7 +739,7 @@ function normalizeAlbums(albums: Array<Partial<PhotoAlbum>> | undefined, fallbac
                 slug: album.slug,
                 summary: album.summary?.trim() || fallbackAlbum?.summary || '',
                 location: album.location?.trim() || fallbackAlbum?.location || '',
-                coverImageUrl: album.coverImageUrl,
+                coverImageUrl: optimizeImageUrl(album.coverImageUrl, 1800),
                 coverImageAlt: album.coverImageAlt?.trim() || album.title?.trim() || fallbackAlbum?.coverImageAlt || `Cover album ${index + 1}`,
                 orderRank: typeof album.orderRank === 'number' ? album.orderRank : fallbackAlbum?.orderRank,
                 photos: normalizePhotos(album.photos, fallbackAlbum?.photos || []),

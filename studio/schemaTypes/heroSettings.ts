@@ -1,3 +1,13 @@
+const webpOnlyMessage = 'Per ora carica solo immagini in formato .webp, cosi evitiamo spreco di spazio.'
+
+function validateWebpImage(value: { asset?: { _ref?: string } } | undefined) {
+    if (!value?.asset?._ref) {
+        return true
+    }
+
+    return value.asset._ref.endsWith('-webp') ? true : webpOnlyMessage
+}
+
 export default {
     name: 'heroSettings',
     title: 'Hero Homepage',
@@ -97,6 +107,9 @@ export default {
             options: {
                 hotspot: true,
             },
+            description: 'Carica solo una immagine WebP per la sezione about.',
+            validation: (Rule: { custom: (fn: (value: { asset?: { _ref?: string } } | undefined) => true | string) => unknown }) =>
+                Rule.custom(validateWebpImage),
         },
         {
             name: 'aboutImageAlt',

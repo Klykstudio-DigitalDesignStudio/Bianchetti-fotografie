@@ -244,6 +244,8 @@ import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import Bottone from '../components/Bottone.vue'
+import { applySeo } from '../lib/seo'
+import { siteName, toAbsoluteUrl } from '../lib/site'
 import {
     getHomepageContent,
     seedAboutSettings,
@@ -467,6 +469,36 @@ function setupHomepageAnimations() {
     })
 }
 
+function updateHomepageSeo() {
+    const heroImage = featuredImages.value[0]?.imageUrl || aboutContent.value.imageUrl
+
+    applySeo({
+        title: `${siteName} - Fotografia di ritratto e storie autentiche`,
+        description: heroContent.value.description,
+        path: '/',
+        image: heroImage,
+        type: 'website',
+        jsonLd: [
+            {
+                '@context': 'https://schema.org',
+                '@type': 'Person',
+                name: siteName,
+                jobTitle: aboutContent.value.role,
+                description: `${aboutContent.value.firstParagraph} ${aboutContent.value.secondParagraph}`,
+                image: aboutContent.value.imageUrl,
+                url: toAbsoluteUrl('/'),
+            },
+            {
+                '@context': 'https://schema.org',
+                '@type': 'WebSite',
+                name: `${siteName} Fotografia`,
+                url: toAbsoluteUrl('/'),
+                description: heroContent.value.description,
+            },
+        ],
+    })
+}
+
 onMounted(async () => {
     const homepageContent = await getHomepageContent()
 
@@ -482,6 +514,7 @@ onMounted(async () => {
 
     startHeroSlider()
     await nextTick()
+    updateHomepageSeo()
     setupHomepageAnimations()
 })
 

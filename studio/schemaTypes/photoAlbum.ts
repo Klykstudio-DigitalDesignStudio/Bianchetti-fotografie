@@ -1,3 +1,13 @@
+const webpOnlyMessage = 'Per ora carica solo immagini in formato .webp, cosi evitiamo spreco di spazio.'
+
+function validateWebpImage(value: { asset?: { _ref?: string } } | undefined) {
+    if (!value?.asset?._ref) {
+        return true
+    }
+
+    return value.asset._ref.endsWith('-webp') ? true : webpOnlyMessage
+}
+
 export default {
     name: 'photoAlbum',
     title: 'Album fotografici',
@@ -38,7 +48,9 @@ export default {
             options: {
                 hotspot: true,
             },
-            validation: (Rule: { required: () => unknown }) => Rule.required(),
+            description: 'Carica una cover gia ottimizzata in formato WebP.',
+            validation: (Rule: { required: () => { custom: (fn: (value: { asset?: { _ref?: string } } | undefined) => true | string) => unknown } }) =>
+                Rule.required().custom(validateWebpImage),
         },
         {
             name: 'coverImageAlt',
@@ -76,7 +88,9 @@ export default {
                             options: {
                                 hotspot: true,
                             },
-                            validation: (Rule: { required: () => unknown }) => Rule.required(),
+                            description: 'Carica solo immagini WebP.',
+                            validation: (Rule: { required: () => { custom: (fn: (value: { asset?: { _ref?: string } } | undefined) => true | string) => unknown } }) =>
+                                Rule.required().custom(validateWebpImage),
                         },
                         {
                             name: 'featuredInHomepage',

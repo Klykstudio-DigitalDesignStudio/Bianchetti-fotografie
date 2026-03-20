@@ -152,6 +152,8 @@ import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useRoute } from 'vue-router'
 import { getAlbumBySlug, type AlbumPhoto, type PhotoAlbum } from '../lib/content'
+import { applySeo } from '../lib/seo'
+import { siteName, toAbsoluteUrl } from '../lib/site'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -346,6 +348,59 @@ function setupAlbumAnimations() {
     animationCleanup.push(() => context.revert())
 }
 
+function updateAlbumSeo(currentAlbum: PhotoAlbum | null, slug: string) {
+    if (!currentAlbum) {
+        applySeo({
+            title: 'Album non trovato',
+            description: 'La pagina richiesta non corrisponde a nessun album fotografico disponibile.',
+            path: `/album/${slug}`,
+            noindex: true,
+        })
+        return
+    }
+
+    applySeo({
+        title: currentAlbum.title,
+        description: currentAlbum.summary,
+        path: `/album/${currentAlbum.slug}`,
+        image: currentAlbum.coverImageUrl,
+        type: 'article',
+        jsonLd: [
+            {
+                '@context': 'https://schema.org',
+                '@type': 'BreadcrumbList',
+                itemListElement: [
+                    {
+                        '@type': 'ListItem',
+                        position: 1,
+                        name: 'Homepage',
+                        item: toAbsoluteUrl('/'),
+                    },
+                    {
+                        '@type': 'ListItem',
+                        position: 2,
+                        name: currentAlbum.title,
+                        item: toAbsoluteUrl(`/album/${currentAlbum.slug}`),
+                    },
+                ],
+            },
+            {
+                '@context': 'https://schema.org',
+                '@type': 'CollectionPage',
+                name: currentAlbum.title,
+                description: currentAlbum.summary,
+                url: toAbsoluteUrl(`/album/${currentAlbum.slug}`),
+                about: currentAlbum.location,
+                creator: {
+                    '@type': 'Person',
+                    name: siteName,
+                },
+                primaryImageOfPage: currentAlbum.coverImageUrl,
+            },
+        ],
+    })
+}
+
 watch(
     () => route.params.slug,
     async (slugParam) => {
@@ -353,6 +408,7 @@ watch(
         album.value = await getAlbumBySlug(slug)
         closeLightbox()
         await nextTick()
+        updateAlbumSeo(album.value, slug)
         setupAlbumAnimations()
     },
     { immediate: true }
