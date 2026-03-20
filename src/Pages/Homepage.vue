@@ -57,7 +57,7 @@
         </svg>
     </section>
     <section id="gallery" ref="gallerySection" class="w-full bg-pink-300 px-6 py-20 sm:px-12 lg:px-24 lg:py-24 xl:px-32 xl:py-28 2xl:px-40">
-        <div class="h-full w-full bg-[#fbf2ea] p-8 sm:p-10 lg:p-12" data-gsap-panel>
+        <div class="h-full w-full bg-[#fbf2ea] p-8 pb-12 sm:p-10 sm:pb-14 lg:p-12 lg:pb-16" data-gsap-panel>
             <div class="flex flex-col gap-6 pb-4 lg:flex-row lg:items-end lg:justify-between" data-gsap-heading>
                 <div>
                     <p id="eyebrow" class="py-4 text-base tracking-[0.18em] text-[#243b63] uppercase">{{ galleryContent.eyebrow }}</p>
@@ -100,7 +100,7 @@
                     </article>
                 </RouterLink>
             </div>
-            <div v-if="albums.length > initialVisibleAlbums" class="flex justify-center">
+            <div v-if="albums.length > initialVisibleAlbums" class="flex justify-center pt-6 lg:pt-8">
                 <Bottone as="button" variant="outline" size="sm" @click="toggleAlbums">
                     {{ isShowingAllAlbums ? galleryContent.collapseLabel : galleryContent.expandLabel }}
                 </Bottone>
